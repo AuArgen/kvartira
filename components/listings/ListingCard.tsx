@@ -119,7 +119,7 @@ export function ListingCard({ listing }: Props) {
 
         {/* Нижняя часть */}
         <div className="mt-auto flex items-center justify-between pt-1">
-          <div className="flex items-center gap-1 text-xs text-gray-400">
+          <div className="flex items-center gap-1 text-xs text-gray-400" title={listing.lalafoCreatedAt ? `Опубликовано на Lalafo: ${new Date(listing.lalafoCreatedAt).toLocaleString('ru-RU')}` : ''}>
             <Clock className="h-3 w-3" />
             <span>{formatDate(listing.lalafoCreatedAt ?? listing.createdAt)}</span>
           </div>
