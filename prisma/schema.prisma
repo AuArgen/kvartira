@@ -106,6 +106,9 @@ model Listing {
   // Тип аренды: 'full' (целая квартира) | 'room' (комната/подселение) | null
   rentType String? @map("rent_type")
 
+  // Мебель: 'full' (с мебелью полностью) | 'partial' (частично) | 'none' (без мебели) | null
+  furnishing String? @map("furnishing")
+
   // Платные фичи
   isVip     Boolean @default(false) @map("is_vip")
   isSelect  Boolean @default(false) @map("is_select")

@@ -16,7 +16,7 @@ function serializeListing(l: {
   oldPrice: { toNumber(): number } | null; currency: string | null; isNegotiable: boolean
   cityName: string | null; lat: { toNumber(): number } | null; lng: { toNumber(): number } | null
   phone: string | null; categoryId: number | null; categoryLabel: string | null
-  rooms: number | null; ownerType: string | null; rentType: string | null; isVip: boolean; isSelect: boolean; isPremium: boolean
+  rooms: number | null; ownerType: string | null; rentType: string | null; furnishing: string | null; isVip: boolean; isSelect: boolean; isPremium: boolean
   lalafoCreatedAt: Date | null; createdAt: Date
   city: { id: number; name: string; alias: string } | null
   district: { id: number; name: string } | null
@@ -36,7 +36,7 @@ function serializeListing(l: {
     lat: l.lat?.toNumber() ?? null,
     lng: l.lng?.toNumber() ?? null,
     phone: l.phone, categoryId: l.categoryId, categoryLabel: l.categoryLabel,
-    rooms: l.rooms, ownerType: l.ownerType, rentType: l.rentType,
+    rooms: l.rooms, ownerType: l.ownerType, rentType: l.rentType, furnishing: l.furnishing,
     isVip: l.isVip, isSelect: l.isSelect, isPremium: l.isPremium,
     lalafoCreatedAt: l.lalafoCreatedAt?.toISOString() ?? null,
     createdAt: l.createdAt.toISOString(),
@@ -71,6 +71,7 @@ export default async function HomePage({ searchParams }: { searchParams: SearchP
   if (params.category) where.categoryId = parseInt(params.category)
   if (params.ownerType) where.ownerType = params.ownerType
   if (params.rentType) where.rentType = params.rentType
+  if (params.furnishing) where.furnishing = params.furnishing
   if (params.rooms) {
     const r = parseInt(params.rooms)
     where.rooms = r >= 4 ? { gte: 4 } : r

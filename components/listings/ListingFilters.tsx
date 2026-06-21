@@ -22,6 +22,7 @@ interface SavedFilter {
   category: string
   ownerType: string
   rentType: string
+  furnishing: string
   rooms: string
   sort: string
 }
@@ -64,6 +65,7 @@ export function ListingFilters({ cities, districts }: Props) {
   const [category, setCategory] = useState(searchParams.get('category') ?? '')
   const [ownerType, setOwnerType] = useState(searchParams.get('ownerType') ?? '')
   const [rentType, setRentType] = useState(searchParams.get('rentType') ?? '')
+  const [furnishing, setFurnishing] = useState(searchParams.get('furnishing') ?? '')
   const [rooms, setRooms] = useState(searchParams.get('rooms') ?? '')
   const [sort, setSort] = useState(searchParams.get('sort') ?? 'newest')
 
@@ -87,6 +89,7 @@ export function ListingFilters({ cities, districts }: Props) {
     setCategory(searchParams.get('category') ?? '')
     setOwnerType(searchParams.get('ownerType') ?? '')
     setRentType(searchParams.get('rentType') ?? '')
+    setFurnishing(searchParams.get('furnishing') ?? '')
     setRooms(searchParams.get('rooms') ?? '')
     setSort(searchParams.get('sort') ?? 'newest')
   }, [searchParams])
@@ -112,7 +115,7 @@ export function ListingFilters({ cities, districts }: Props) {
   function buildParams(overrides: {
     searchOverride?: string; cityOverride?: string; districtOverride?: string[]
     minPriceOverride?: string; maxPriceOverride?: string; categoryOverride?: string
-    ownerTypeOverride?: string; rentTypeOverride?: string
+    ownerTypeOverride?: string; rentTypeOverride?: string; furnishingOverride?: string
     roomsOverride?: string; sortOverride?: string
   } = {}) {
     const s = overrides.searchOverride ?? search
@@ -123,6 +126,7 @@ export function ListingFilters({ cities, districts }: Props) {
     const cat = overrides.categoryOverride ?? category
     const ot = overrides.ownerTypeOverride ?? ownerType
     const rt = overrides.rentTypeOverride ?? rentType
+    const fu = overrides.furnishingOverride ?? furnishing
     const r = overrides.roomsOverride ?? rooms
     const srt = overrides.sortOverride ?? sort
     const params = new URLSearchParams()
@@ -134,6 +138,7 @@ export function ListingFilters({ cities, districts }: Props) {
     if (cat) params.set('category', cat)
     if (ot) params.set('ownerType', ot)
     if (rt) params.set('rentType', rt)
+    if (fu) params.set('furnishing', fu)
     if (r) params.set('rooms', r)
     if (srt && srt !== 'newest') params.set('sort', srt)
     return params
@@ -152,7 +157,7 @@ export function ListingFilters({ cities, districts }: Props) {
   function reset() {
     setSearch(''); setCity(''); setDistrictIds([])
     setMinPrice(''); setMaxPrice(''); setCategory('')
-    setOwnerType(''); setRentType('')
+    setOwnerType(''); setRentType(''); setFurnishing('')
     setRooms(''); setSort('newest')
     router.push(pathname)
     setOpen(false)
@@ -179,7 +184,7 @@ export function ListingFilters({ cities, districts }: Props) {
     const entry: SavedFilter = {
       id: Date.now().toString(),
       name,
-      search, city, districtIds, minPrice, maxPrice, category, ownerType, rentType, rooms, sort,
+      search, city, districtIds, minPrice, maxPrice, category, ownerType, rentType, furnishing, rooms, sort,
     }
     const updated = [entry, ...savedFilters]
     setSavedFilters(updated)
@@ -191,7 +196,7 @@ export function ListingFilters({ cities, districts }: Props) {
   function applyFilter(f: SavedFilter) {
     setSearch(f.search); setCity(f.city); setDistrictIds(f.districtIds)
     setMinPrice(f.minPrice); setMaxPrice(f.maxPrice); setCategory(f.category)
-    setOwnerType(f.ownerType ?? ''); setRentType(f.rentType ?? '')
+    setOwnerType(f.ownerType ?? ''); setRentType(f.rentType ?? ''); setFurnishing(f.furnishing ?? '')
     setRooms(f.rooms); setSort(f.sort)
     const params = new URLSearchParams()
     if (f.search) params.set('search', f.search)
@@ -202,6 +207,7 @@ export function ListingFilters({ cities, districts }: Props) {
     if (f.category) params.set('category', f.category)
     if (f.ownerType) params.set('ownerType', f.ownerType)
     if (f.rentType) params.set('rentType', f.rentType)
+    if (f.furnishing) params.set('furnishing', f.furnishing)
     if (f.rooms) params.set('rooms', f.rooms)
     if (f.sort && f.sort !== 'newest') params.set('sort', f.sort)
     router.push(`${pathname}?${params}`)
@@ -214,8 +220,8 @@ export function ListingFilters({ cities, districts }: Props) {
     persistSaved(updated)
   }
 
-  const hasFilters = !!(search || city || districtIds.length || minPrice || maxPrice || category || ownerType || rentType || rooms)
-  const activeCount = [search, city, districtIds.length ? '1' : '', minPrice || maxPrice ? '1' : '', category, ownerType, rentType, rooms].filter(Boolean).length
+  const hasFilters = !!(search || city || districtIds.length || minPrice || maxPrice || category || ownerType || rentType || furnishing || rooms)
+  const activeCount = [search, city, districtIds.length ? '1' : '', minPrice || maxPrice ? '1' : '', category, ownerType, rentType, furnishing, rooms].filter(Boolean).length
 
   const cityOptions: SelectOption[] = cities.map(c => ({ value: c.alias, label: c.name }))
   const districtOptions: SelectOption[] = districts.map(d => ({ value: String(d.id), label: d.name }))
@@ -370,6 +376,32 @@ export function ListingFilters({ cities, districts }: Props) {
                   'flex-1 rounded-lg border py-1.5 text-center text-xs font-medium transition-colors',
                   ownerType === opt.value
                     ? 'border-violet-600 bg-violet-600 text-white'
+                    : 'border-gray-200 text-gray-600 hover:bg-gray-50'
+                )}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Мебель */}
+        <div>
+          <label className="mb-2 block text-xs font-medium text-gray-500 uppercase tracking-wide">Мебель</label>
+          <div className="flex gap-1.5">
+            {[
+              { value: '', label: 'Все' },
+              { value: 'full', label: 'С мебелью' },
+              { value: 'partial', label: 'Частично' },
+              { value: 'none', label: 'Без мебели' },
+            ].map(opt => (
+              <button
+                key={opt.value} type="button"
+                onClick={() => setFurnishing(opt.value)}
+                className={cn(
+                  'flex-1 rounded-lg border py-1.5 text-center text-xs font-medium transition-colors',
+                  furnishing === opt.value
+                    ? 'border-teal-600 bg-teal-600 text-white'
                     : 'border-gray-200 text-gray-600 hover:bg-gray-50'
                 )}
               >
@@ -562,6 +594,12 @@ export function ListingFilters({ cities, districts }: Props) {
             {category && (
               <MobileChip label={category === '2045' ? 'Посуточно' : 'Долгосрочная'}
                 onRemove={() => { setCategory(''); pushParams({ categoryOverride: '' }) }} />
+            )}
+            {furnishing && (
+              <MobileChip
+                label={furnishing === 'full' ? 'С мебелью' : furnishing === 'partial' ? 'Частично меблирован' : 'Без мебели'}
+                onRemove={() => { setFurnishing(''); pushParams({ furnishingOverride: '' }) }}
+              />
             )}
             <button onClick={reset}
               className="rounded-full border border-gray-200 bg-white px-2.5 py-1 text-xs text-gray-400 hover:text-red-500">

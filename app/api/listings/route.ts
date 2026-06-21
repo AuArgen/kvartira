@@ -37,6 +37,8 @@ export async function GET(req: NextRequest) {
   if (categoryId) where.categoryId = parseInt(categoryId)
   if (ownerType) where.ownerType = ownerType
   if (rentType) where.rentType = rentType
+  const furnishing = searchParams.get('furnishing') ?? ''
+  if (furnishing) where.furnishing = furnishing
   if (rooms) {
     const r = parseInt(rooms)
     where.rooms = r >= 4 ? { gte: 4 } : r
@@ -86,6 +88,7 @@ export async function GET(req: NextRequest) {
     lalafoUpdatedAt: l.lalafoUpdatedAt?.toISOString() ?? null,
     createdAt: l.createdAt.toISOString(),
     updatedAt: l.updatedAt.toISOString(),
+    furnishing: 'furnishing' in l ? (l.furnishing as string | null) : null,
     images: l.images.map((img) => ({
       ...img,
       lalafoImageId: img.lalafoImageId?.toString() ?? null,

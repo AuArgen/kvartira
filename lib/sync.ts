@@ -28,6 +28,13 @@ function parseRentType(title: string): string {
   return 'full'
 }
 
+function parseFurnishing(title: string): string | null {
+  if (/с мебелью полностью/i.test(title)) return 'full'
+  if (/с мебелью частично/i.test(title)) return 'partial'
+  if (/без мебели/i.test(title)) return 'none'
+  return null
+}
+
 function isEligible(item: LalafoItem): boolean {
   if (item.price != null && item.price < MIN_PRICE) return false
   const cutoff = Date.now() / 1000 - MAX_AGE_DAYS * 24 * 60 * 60
@@ -213,6 +220,7 @@ async function saveSingleListing(item: LalafoItem) {
       rooms: parseRooms(item.title),
       ownerType: parseOwnerType(item.title),
       rentType: parseRentType(item.title),
+      furnishing: parseFurnishing(item.title),
 
       isVip: item.is_vip ?? false,
       isSelect: item.is_select ?? false,

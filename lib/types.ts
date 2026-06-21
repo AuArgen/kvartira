@@ -110,6 +110,7 @@ export interface SerializedListing {
   rooms: number | null
   ownerType: string | null
   rentType: string | null
+  furnishing: string | null
   isVip: boolean
   isSelect: boolean
   isPremium: boolean

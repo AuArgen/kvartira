@@ -96,6 +96,21 @@ export function ListingCard({ listing }: Props) {
                 Подселение
               </span>
             )}
+            {listing.furnishing === 'full' && (
+              <span className="rounded-md bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-700">
+                С мебелью
+              </span>
+            )}
+            {listing.furnishing === 'partial' && (
+              <span className="rounded-md bg-sky-50 px-2 py-0.5 text-[11px] font-medium text-sky-600">
+                Частично меблирован
+              </span>
+            )}
+            {listing.furnishing === 'none' && (
+              <span className="rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-500">
+                Без мебели
+              </span>
+            )}
           </div>
         )}
 
